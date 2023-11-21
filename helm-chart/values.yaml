@@ -1,0 +1,65 @@
+
+web:
+  image:
+    repository: anilson87/hellophoenix-web
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicacount: 1
+  service:
+    type: NodePort
+    port: 8000
+    targetPort: 8000
+    nodePort: 30100
+volume:
+  web:
+    mountPath: /app/priv/static
+    pvcName: web-volume
+  postgres:
+    mountPath: /var/lib/postgresql/data
+    pvcName: postgres-volume
+  js:
+    mountPath: /app
+    pvcName: js-volume
+  css:
+    mountPath: /app
+    pvcName: css-volume
+
+namespace:
+  name: phoenix-demo
+
+env:
+  UID: 1000
+  GID: 1000
+  MIX_ENV: prod
+  NODE_ENV: production
+  POSTGRES_USER: hello
+  POSTGRES_PASSWORD: password
+  POSTGRES_DB: hello
+  POSTGRES_HOST: postgres
+  POSTGRES_HOST: cluster-with-metrics-rw
+  POSTGRES_PORT: 5432
+  POSTGRES_POOL: 15
+  DOCKER_BUILDKIT: 1
+  COMPOSE_PROJECT_NAME: hellophoenix
+  COMPOSE_PROFILES: postgres,assets,web
+  URL_SCHEME: http
+  URL_HOST: localhost
+  URL_PORT: 8000
+  SECRET_KEY_BASE: please_generate_a_more_secure_unique_secret_value_for_your_project
+
+# resource constraints
+resources:
+  web:
+    limits:
+      cpu: 0
+      memory: 0
+    requests:
+      cpu: 0
+      memory: 0
+  postgres:
+    limits:
+      cpu: 0
+      memory: 0
+    requests:
+      cpu: 0
+      memory: 0

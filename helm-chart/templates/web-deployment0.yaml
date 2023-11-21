@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
+          ports:
+            - containerPort: 8000
+
+          env:
+            - name: MIX_ENV
+              value: "{{ .Values.env.MIX_ENV }}"
+            - name: NODE_ENV
+              value: "{{ .Values.env.NODE_ENV }}"
+            - name: UID
+              value: "{{ .Values.env.UID }}"
+            - name: GID
+              value: "{{ .Values.env.GID }}"
+            - name: URL_HOST
+              value: "{{ .Values.env.URL_HOST }}"
+            - name: URL_SCHEME
+              value: "{{ .Values.env.URL_SCHEME }}"
+            - name: URL_PORT
+              value: "{{ .Values.env.URL_PORT }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.env.POSTGRES_USER }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.env.POSTGRES_PASSWORD }}"
+            - name: POSTGRES_DB
+              value: "{{ .Values.env.POSTGRES_DB }}"
+            - name: POSTGRES_HOST
+              value: "{{ .Values.env.POSTGRES_HOST }}"
+            - name: POSTGRES_PORT
+              value: "{{ .Values.env.POSTGRES_PORT }}"
+            - name: POSTGRES_POOL
+              value: "{{ .Values.env.POSTGRES_POOL }}"
+            - name: SECRET_KEY_BASE
+              value: "{{ .Values.env.SECRET_KEY_BASE }}"
+
+#              value: $(./run secret)
+
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.web.limits.cpu }}"
+              memory: "{{ .Values.resources.web.limits.memory }}"
+            requests:
+              cpu: "{{ .Values.resources.web.requests.cpu }}"
+              memory: "{{ .Values.resources.web.requests.memory }}"
+          volumeMounts:
+            - name: web-app-volume
+              mountPath: {{ .Values.volume.web.mountPath}}
+#            - name: web-run-volume
+#              mountPath: /run
+        #  readinessProbe:
+        #    exec:
+        #      command:
+        #        - "curl"
+        #        - "localhost:8000/up"
+        #    initialDelaySeconds: 5
+        #    periodSeconds: 10
+        #    timeoutSeconds: 5
+        #    successThreshold: 1
+        #    failureThreshold: 3
+#          livenessProbe:
+#            httpGet:
+#              path: /up
+#              port: 8000
+#            exec:
+#              command:
+#                - "curl"
+#                - "localhost:8000/up"
+#            initialDelaySeconds: 30
+#            periodSeconds: 60
+#            timeoutSeconds: 5
+#            failureThreshold: 5
+
+      volumes:
+#        - name: web-run-volume
+#          emptyDir: {}
+        - name: web-app-volume
+          emptyDir: {}
+#          configMap:
+#            name: run-script
