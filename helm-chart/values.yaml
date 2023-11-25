@@ -1,31 +1,12 @@
 
-web:
-  image:
-    repository: anilson87/hellophoenix-web
-    tag: latest
-    pullPolicy: IfNotPresent
-  replicacount: 1
-  service:
-    type: NodePort
-    port: 8000
-    targetPort: 8000
-    nodePort: 30100
-volume:
-  web:
-    mountPath: /app/priv/static
-    pvcName: web-volume
-  postgres:
-    mountPath: /var/lib/postgresql/data
-    pvcName: postgres-volume
-  js:
-    mountPath: /app
-    pvcName: js-volume
-  css:
-    mountPath: /app
-    pvcName: css-volume
+image:
+  repository: anilson87/my-web-app
+  tag: latest
 
-namespace:
-  name: phoenix-demo
+service:
+  ports:
+    - name: http
+      port: 8000
 
 env:
   UID: 1000
@@ -47,19 +28,5 @@ env:
   URL_PORT: 8000
   SECRET_KEY_BASE: please_generate_a_more_secure_unique_secret_value_for_your_project
 
-# resource constraints
-resources:
-  web:
-    limits:
-      cpu: 0
-      memory: 0
-    requests:
-      cpu: 0
-      memory: 0
-  postgres:
-    limits:
-      cpu: 0
-      memory: 0
-    requests:
-      cpu: 0
-      memory: 0
+volume:
+  mountPath: /app/priv/static

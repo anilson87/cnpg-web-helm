@@ -1,11 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: js
+  name: mywebapp
 spec:
   selector:
-    app: my-phoenix-js
+    app: mywebapp
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 3000
+      port: 8000

@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web
+  name: mywebapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: web
+      app: mywebapp
   template:
     metadata:
       labels:
-        app: web
+        app: mywebapp
     spec:
       containers:
-        - name: web
-          image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: 8000
-
+            - name: http
+              containerPort: 8000
           env:
             - name: MIX_ENV
               value: "{{ .Values.env.MIX_ENV }}"
@@ -47,20 +47,12 @@ spec:
               value: "{{ .Values.env.POSTGRES_POOL }}"
             - name: SECRET_KEY_BASE
               value: "{{ .Values.env.SECRET_KEY_BASE }}"
-
-
-          resources:
-            limits:
-              cpu: "{{ .Values.resources.web.limits.cpu }}"
-              memory: "{{ .Values.resources.web.limits.memory }}"
-            requests:
-              cpu: "{{ .Values.resources.web.requests.cpu }}"
-              memory: "{{ .Values.resources.web.requests.memory }}"
           volumeMounts:
-            - name: web-app-volume
-              mountPath: {{ .Values.volume.web.mountPath}}
-
-
+            - name: local-pvc
+              mountPath: {{ .Values.volume.mountPath }}
+              readOnly: false
+          imagePullPolicy: IfNotPresent
       volumes:
-        - name: web-app-volume
-          emptyDir: {}
+        - name: local-pvc
+          persistentVolumeClaim:
+            claimName: my-local-pvc
